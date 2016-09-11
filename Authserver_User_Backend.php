@@ -66,8 +66,10 @@ class Authserver_User_Backend extends Base implements IUserBackend {
             return false;
         }
 
-        if(!in_array($this->requiredGroup, $decoded_data['groups']) && !$this->userExists($decoded_data['username']))
+        if(!in_array($this->requiredGroup, $decoded_data['groups'])) {
+            \OCP\Util::writeLog('OC_USER_Authserver', 'User not in required group '.$this->requiredGroup.' (groups: '.implode(', ', $decoded_data['groups']).')', 3);
             return false;
+        }
 
         $this->storeUser($decoded_data['username']);
         $this->setDisplayName($decoded_data['username'], $decoded_data['name']);
