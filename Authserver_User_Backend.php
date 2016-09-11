@@ -61,11 +61,10 @@ class Authserver_User_Backend extends Base implements IUserBackend {
             return false;
         }
 
-        if(isset($decoded_data['error']))
+        if(isset($decoded_data['error'])) {
+            \OCP\Util::writeLog('OC_USER_Authserver', 'Authserver returned error: '.$decoded_data['error'], 3);
             return false;
-
-        if($decoded_data['username'] !== $uid)
-            return false;
+        }
 
         if(!in_array($this->requiredGroup, $decoded_data['groups']) && !$this->userExists($decoded_data['username']))
             return false;
