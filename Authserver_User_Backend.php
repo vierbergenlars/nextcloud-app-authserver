@@ -75,7 +75,8 @@ class Authserver_User_Backend extends Base implements IUserBackend {
         $this->setDisplayName($decoded_data['username'], $decoded_data['name']);
 
         $owncloudUser = \OC::$server->getUserManager()->get($decoded_data['username']);
-        $owncloudUser->setEMailAddress($decoded_data['primary-email']);
+        if($owncloudUser->getEMailAddress() !== $decoded_data['primary-email'])
+            $owncloudUser->setEMailAddress($decoded_data['primary-email']);
         $owncloudUser->setEnabled(in_array($this->requiredGroup, $decoded_data['groups']));
 
         $authserverGroups = array_map(function($groupName)  {
