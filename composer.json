@@ -1,0 +1,20 @@
+{
+	"name": "vierbergenlars/nextcloud-authserver-login",
+	"type": "project",
+	"require": {
+		"league/oauth2-client": "^2.3"
+	},
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Lars Vierbergen",
+			"email": "vierbergenlars@gmail.com"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Studentenraad\\Owncloud\\AuthserverLogin\\": "src/",
+			"OCA\\AuthserverLogin\\": "src/"
+		}
+	}
+}

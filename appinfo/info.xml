@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <info>
-    <id>owncloud-app-authserver</id>
+    <id>authserver-login</id>
     <name>Authserver login</name>
     <description>Lets users log in with their Authserver credentials</description>
     <licence>MIT</licence>
     <author>Lars Vierbergen</author>
     <version>0.1.0</version>
-    <namespace>Studentenraad</namespace>
+    <namespace>AuthserverLogin</namespace>
     <category>other</category>
     <types>
         <authentication/>

@@ -1,2 +1,8 @@
 <?php
-OC::$CLASSPATH['Studentenraad\\Owncloud\\AuthserverLogin\\Authserver_User_Backend']=__DIR__.'/../Authserver_User_Backend.php';
+use OCA\AuthserverLogin\AppInfo\Application;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$app = new Application();
+$app->register();
+

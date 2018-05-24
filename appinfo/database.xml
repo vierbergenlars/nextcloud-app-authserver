@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<database>
+ <name>*dbname*</name>
+ <create>true</create>
+ <overwrite>false</overwrite>
+ <charset>utf8</charset>
+ <table>
+  <name>*dbprefix*authserver_login</name>
+  <declaration>
+    <field>
+      <name>uid</name>
+      <type>text</type>
+      <notnull>true</notnull>
+    </field>
+    <field>
+      <name>authserver_guid</name>
+      <type>text</type>
+      <notnull>true</notnull>
+    </field>
+
+    <index>
+      <name>authserver_guid_idx</name>
+      <unique>true</unique>
+      <field>
+        <name>authserver_guid</name>
+      </field>
+    </index>
+  </declaration>
+</table>
+</database>
