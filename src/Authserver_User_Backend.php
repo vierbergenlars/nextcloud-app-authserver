@@ -28,21 +28,16 @@ use OCA\user_external\Base;
 use OCP\IUserBackend;
 use OCA\AuthserverLogin\Provider\AuthserverUserProvider;
 use OCA\AuthserverLogin\Db\AuthserverLoginDAO;
+use OC\User\LoginException;
 
 class Authserver_User_Backend extends Base implements IUserBackend
 {
 
-    private $requiredGroup;
-
-    private $groupPrefix;
-
     private $authserverUrl;
 
-    public function __construct($authUrl, $requiredGroup, $groupPrefix = null)
+    public function __construct($authUrl)
     {
         $this->authserverUrl = $authUrl;
-        $this->requiredGroup = $requiredGroup;
-        $this->groupPrefix = $groupPrefix;
         parent::__construct($authUrl);
     }
 
@@ -73,14 +68,19 @@ class Authserver_User_Backend extends Base implements IUserBackend
 
         if (isset($decoded_data['username'])) {
             $user = \OC::$server->getUserManager()->get($decoded_data['username']);
-            if ($user) {
+            if ($user && !$authserverLogin->findUser($decoded_data['guid'])) {
                 $authserverLogin->connect($user->getUID(), $decoded_data['guid']);
             }
         }
 
         $userProvider = \OC::$server->query(AuthserverUserProvider::class);
         /* @var $userProvider AuthserverUserProvider */
-        $user = $userProvider->getUser($decoded_data);
+        try {
+            $user = $userProvider->getUser($decoded_data);
+        } catch (LoginException $ex) {
+            \OCP\Util::writeLog('OC_USER_Authserver', $ex->getMessage(), 3);
+            return false;
+        }
 
         if (!$user) {
             return false;

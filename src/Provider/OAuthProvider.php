@@ -61,7 +61,7 @@ class OAuthProvider
                 'urlAuthorize' => $this->getConfig('base_url') . '/oauth/v2/auth',
                 'urlAccessToken' => $this->getConfig('base_url') . '/oauth/v2/token',
                 'urlResourceOwnerDetails' => $this->getConfig('base_url') . '/api/user.json',
-                'scopes' => $this->getConfig('scopes', 'profile:username profile:realname profile:email')
+                'scopes' => $this->getConfig('scopes', 'profile:username profile:realname profile:email profile:groups')
             ]);
         }
         return $this->provider;
@@ -77,6 +77,11 @@ class OAuthProvider
         return $authUrl;
     }
 
+    public function generateLogoutUrl()
+    {
+        return $this->getConfig('base_url') . '/usr/kill-session';
+    }
+
     public function getUserInformation(array $params)
     {
         try {
@@ -88,7 +93,9 @@ class OAuthProvider
                 'code' => $params['code']
             ]);
 
-            return $this->getProvider()->getResourceOwner($accessToken);
+            return $this->getProvider()
+                ->getResourceOwner($accessToken)
+                ->toArray();
         } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $ex) {
             throw new LoginException($ex->getMessage(), $ex->getCode(), $ex);
         }

@@ -56,18 +56,20 @@ class AuthserverUserProvider
             throw new LoginException('Authserver returned error: ' . $userData['error']);
         }
 
-        if (!in_array($this->requiredGroup, $userData['groups'])) {
+        if ($this->requiredGroup && !in_array($this->requiredGroup, $userData['groups'])) {
             \OCP\Util::writeLog('OC_USER_Authserver', 'User not in required group ' . $this->requiredGroup . ' (groups: ' . implode(', ', $userData['groups']) . ')', 3);
             throw new LoginException('User is not in required group');
         }
 
-        $user = $this->authserverLogin->findUser($userData['guid']);
+        $linkeduid = $this->authserverLogin->findUser($userData['guid']);
 
-        if (!$user) {
+        if (!$linkeduid) {
             $username = isset($userData['username']) ? $userData['username'] : $userData['guid'];
             $password = substr(base64_encode(random_bytes(64)), 0, 30);
             $user = $this->userManager->createUser($username, $password);
             $this->authserverLogin->connect($user->getUID(), $userData['guid']);
+        } else {
+            $user = $this->userManager->get($linkeduid);
         }
 
         $displayname = isset($userData['name']) ? $userData['name'] : $username;
@@ -76,22 +78,28 @@ class AuthserverUserProvider
         if (isset($userData['primary-email']) && $user->getEMailAddress() !== $userData['primary-email'])
             $user->setEMailAddress($userData['primary-email']);
 
-        $user->setEnabled(in_array($this->requiredGroup, $userData['groups']));
-
-        $authserverGroups = array_map(function ($groupName) {
-            return substr($groupName, strlen($this->groupPrefix));
-        }, array_filter($userData['groups'], function ($groupName) {
-            return strpos($groupName, $this->groupPrefix) === 0;
-        }));
-
-        foreach ($authserverGroups as $groupName) {
-            $owncloudGroup = $this->groupManager->createGroup($groupName);
-            $owncloudGroup->addUser($user);
+        if ($this->requiredGroup && isset($userData['groups'])) {
+            $user->setEnabled(in_array($this->requiredGroup, $userData['groups']));
+        } else {
+            $user->setEnabled(false);
         }
 
-        foreach ($this->groupManager->getUserGroups($user) as $owncloudGroup) {
-            if (!in_array($owncloudGroup->getGID(), $authserverGroups))
-                $owncloudGroup->removeUser($user);
+        if ($this->groupPrefix && isset($userData['groups'])) {
+            $authserverGroups = array_map(function ($groupName) {
+                return substr($groupName, strlen($this->groupPrefix));
+            }, array_filter($userData['groups'], function ($groupName) {
+                return strpos($groupName, $this->groupPrefix) === 0;
+            }));
+
+            foreach ($authserverGroups as $groupName) {
+                $owncloudGroup = $this->groupManager->createGroup($groupName);
+                $owncloudGroup->addUser($user);
+            }
+
+            foreach ($this->groupManager->getUserGroups($user) as $owncloudGroup) {
+                if (!in_array($owncloudGroup->getGID(), $authserverGroups))
+                    $owncloudGroup->removeUser($user);
+            }
         }
 
         return $user;
