@@ -18,9 +18,21 @@ class Application extends App
 
     const APPNAME = 'authserver-login';
 
+    private $enableOauthCache = null;
+
     public function __construct()
     {
         parent::__construct(self::APPNAME);
+    }
+
+    private function enableOAuth()
+    {
+        if ($this->enableOauthCache === null) {
+            $config = $this->getContainer()->query(IConfig::class);
+            /* @var $config IConfig */
+            $this->enableOauthCache = !!$config->getSystemValue('authserver_login_client_id');
+        }
+        return $this->enableOauthCache;
     }
 
     public function register()
@@ -39,30 +51,26 @@ class Application extends App
             return new AuthserverUserProvider($c->query(IConfig::class), $c->query(\OCP\IUserManager::class), $c->query(\OCP\IGroupManager::class), $c->query(AuthserverLoginDAO::class));
         });
 
-        $config = $container->query(IConfig::class);
-        /* @var $config IConfig */
-
-        $provider = $container->query(OAuthProvider::class);
-        /* @var $provider OAuthProvider */
-
-        $session = $container->query(ISession::class);
-        /* @var $session ISession */
-
-        $isLogin = $container->query(IRequest::class)->getPathInfo() === '/login';
-
-        if ($isLogin) {
-            // Util::addScript(static::APPNAME, 'style');
-            $authorizeUrl = $provider->generateAuthorizeUrl();
-            \OC_App::registerLogIn([
-                'name' => $config->getSystemValue('authserver_login_label', 'Authserver'),
-                'href' => $authorizeUrl
-            ]);
-        }
-
-        $useLoginRedirect = $config->getSystemValue('authserver_login_auto_redirect', false) && !$session->exists('loginMessages');
-        if ($useLoginRedirect && $isLogin) {
-            header('Location: ' . $authorizeUrl);
-            exit();
+        if ($this->enableOAuth()) {
+            $isLogin = $container->query(IRequest::class)->getPathInfo() === '/login';
+            if ($isLogin) {
+                $config = $container->query(IConfig::class);
+                /* @var $config IConfig */
+                $provider = $container->query(OAuthProvider::class);
+                /* @var $provider OAuthProvider */
+                $authorizeUrl = $provider->generateAuthorizeUrl();
+                \OC_App::registerLogIn([
+                    'name' => $config->getSystemValue('authserver_login_label', 'Authserver'),
+                    'href' => $authorizeUrl
+                ]);
+                $session = $container->query(ISession::class);
+                /* @var $session ISession */
+                $useLoginRedirect = $config->getSystemValue('authserver_login_auto_redirect', false) && !$session->exists('loginMessages');
+                if ($useLoginRedirect) {
+                    header('Location: ' . $authorizeUrl);
+                    exit();
+                }
+            }
         }
 
         $this->registerHooks();
@@ -80,11 +88,14 @@ class Application extends App
             $loginDao->disconnect($user->getUid());
         });
 
-        $session->listen('\OC\User', 'postLogout', function () use ($container) {
-            $provider = $container->query(OAuthProvider::class);
-            /* @var $provider OAuthProvider */
-            header('Location: ' . $provider->generateLogoutUrl());
-            exit();
-        });
+        if ($this->enableOAuth()) {
+
+            $session->listen('\OC\User', 'postLogout', function () use ($container) {
+                $provider = $container->query(OAuthProvider::class);
+                /* @var $provider OAuthProvider */
+                header('Location: ' . $provider->generateLogoutUrl());
+                exit();
+            });
+        }
     }
 }
