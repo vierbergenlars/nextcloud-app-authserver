@@ -5,7 +5,7 @@
     <description>Lets users log in with their Authserver credentials</description>
     <licence>MIT</licence>
     <author>Lars Vierbergen</author>
-    <version>0.1.0</version>
+    <version>1.0.0</version>
     <namespace>AuthserverLogin</namespace>
     <category>other</category>
     <types>
@@ -13,6 +13,6 @@
         <prelogin/>
     </types>
     <dependencies>
-        <owncloud min-version="9.0" max-version="12.0" />
+        <nextcloud min-version="12.0" />
     </dependencies>
 </info>
