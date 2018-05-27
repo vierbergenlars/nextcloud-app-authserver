@@ -89,6 +89,11 @@ class Authserver_User_Backend extends Base implements IUserBackend
         return $user->getUID();
     }
 
+    public function createUser($uid, $password)
+    {
+        $this->storeUser($uid);
+    }
+
     /**
      * Backend name to be shown in user management
      *

@@ -2,7 +2,7 @@
 	"name": "vierbergenlars/nextcloud-authserver-login",
 	"type": "project",
 	"require": {
-		"league/oauth2-client": "^2.3"
+		"hybridauth/hybridauth": "^3.0-rc"
 	},
 	"license": "MIT",
 	"authors": [

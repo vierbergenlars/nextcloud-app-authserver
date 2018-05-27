@@ -52,7 +52,9 @@ class Application extends App
         });
 
         if ($this->enableOAuth()) {
-            $isLogin = $container->query(IRequest::class)->getPathInfo() === '/login';
+            $request = $container->query(IRequest::class);
+            /* @var $request IRequest */
+            $isLogin = $request->getPathInfo() === '/login';
             if ($isLogin) {
                 $config = $container->query(IConfig::class);
                 /* @var $config IConfig */
@@ -65,7 +67,8 @@ class Application extends App
                 ]);
                 $session = $container->query(ISession::class);
                 /* @var $session ISession */
-                $useLoginRedirect = $config->getSystemValue('authserver_login_auto_redirect', false) && !$session->exists('loginMessages');
+                $useLoginRedirect = $config->getSystemValue('authserver_login_auto_redirect', false) && !$session->exists('loginMessages') && $request->getMethod() === 'GET';
+                ;
                 if ($useLoginRedirect) {
                     header('Location: ' . $authorizeUrl);
                     exit();

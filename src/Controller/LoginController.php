@@ -96,6 +96,17 @@ class LoginController extends Controller
                     $e->getMessage()
                 ]
             ]);
+        } catch (\Exception $e) {
+            $this->logger->error('OAuth authentication failed: ' . $e->getMessage(), [
+                'exception' => $e
+            ]);
+            $this->session->set('loginMessages', [
+                [
+                    'internalexception'
+                ],
+                [
+                ]
+            ]);
         }
         return new RedirectResponse($this->urlGenerator->getAbsoluteURL('/'));
     }

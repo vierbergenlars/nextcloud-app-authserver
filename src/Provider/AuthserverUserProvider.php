@@ -6,6 +6,7 @@ use OCP\IUserManager;
 use OCP\IConfig;
 use OC\User\LoginException;
 use OCA\AuthserverLogin\Db\AuthserverLoginDAO;
+use Studentenraad\Owncloud\AuthserverLogin\Authserver_User_Backend;
 
 class AuthserverUserProvider
 {
@@ -66,6 +67,13 @@ class AuthserverUserProvider
         if (!$linkeduid) {
             $username = isset($userData['username']) ? $userData['username'] : $userData['guid'];
             $password = substr(base64_encode(random_bytes(64)), 0, 30);
+            for ($i = 1; $i < 40; $i++) {
+                $testusername = ($i > 1) ? $username . '_' . $i : $username;
+                if ($this->userManager->get($testusername) === null) {
+                    $username = $testusername;
+                    break;
+                }
+            }
             $user = $this->userManager->createUser($username, $password);
             $this->authserverLogin->connect($user->getUID(), $userData['guid']);
         } else {
