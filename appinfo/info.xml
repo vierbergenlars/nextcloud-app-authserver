@@ -5,7 +5,7 @@
     <description>Lets users log in with their Authserver credentials</description>
     <licence>MIT</licence>
     <author>Lars Vierbergen</author>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <namespace>AuthserverLogin</namespace>
     <category>other</category>
     <types>
