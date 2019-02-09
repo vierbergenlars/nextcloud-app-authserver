@@ -14,6 +14,7 @@
     <website>https://github.com/vierbergenlars/nextcloud-app-authserver</website>
     <types>
         <authentication/>
+        <prelogin />
     </types>
     <dependencies>
         <nextcloud min-version="12.0" />

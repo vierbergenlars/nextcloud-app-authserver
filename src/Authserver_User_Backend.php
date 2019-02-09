@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-namespace Studentenraad\Owncloud\AuthserverLogin;
+namespace OCA\AuthserverLogin;
 
 use OCA\user_external\Base;
 use OCP\IUserBackend;

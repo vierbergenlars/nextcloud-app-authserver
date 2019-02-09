@@ -13,7 +13,6 @@
 	],
 	"autoload": {
 		"psr-4": {
-			"Studentenraad\\Owncloud\\AuthserverLogin\\": "src/",
 			"OCA\\AuthserverLogin\\": "src/"
 		}
 	}

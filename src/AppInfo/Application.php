@@ -16,7 +16,7 @@ use OCP\IUserSession;
 class Application extends App
 {
 
-    const APPNAME = 'authserver-login';
+    const APPNAME = 'user_authserver';
 
     private $enableOauthCache = null;
 
