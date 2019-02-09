@@ -24,7 +24,7 @@ To make use of OAuth login, a full configuration is required
 'authserver_login_scopes' => 'profile:username profile:realname profile:email profile:groups' // OAuth scopes to request (defaults to 'profile:username profile:realname profile:email profile:groups')
 'user_backends' => array (
     0 => array (
-        'class' => 'Studentenraad\\Owncloud\\AuthserverLogin\\Authserver_User_Backend',
+        'class' => 'OCA\\AuthserverLogin\\Authserver_User_Backend',
         'arguments' => array (
             0 => 'https://studentenraad.be/auth/api/user.json', // Path to authserver /api/user.json
         ),
@@ -47,7 +47,7 @@ If `authserver_login_client_id` is not present, OAuth authentication will not be
 'authserver_login_group_prefix' => 'nextcloud_', // Authserver group prefix. All Authserver groups that start with this prefix will be mapped to the corresponding OwnCloud group (without the prefix)
 'user_backends' => array (
     0 => array (
-        'class' => 'Studentenraad\\Owncloud\\AuthserverLogin\\Authserver_User_Backend',
+        'class' => 'OCA\\AuthserverLogin\\Authserver_User_Backend',
         'arguments' => array (
             0 => 'https://studentenraad.be/auth/api/user.json', // Path to authserver /api/user.json
         ),

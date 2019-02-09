@@ -54,7 +54,11 @@ class Application extends App
         if ($this->enableOAuth()) {
             $request = $container->query(IRequest::class);
             /* @var $request IRequest */
-            $isLogin = $request->getPathInfo() === '/login';
+            try {
+                $isLogin = $request->getPathInfo() === '/login';
+            } catch (\Exception $e) {
+                $isLogin = false;
+            }
             if ($isLogin) {
                 $config = $container->query(IConfig::class);
                 /* @var $config IConfig */
