@@ -1,16 +1,20 @@
 <?xml version="1.0"?>
-<info>
-    <id>authserver-login</id>
-    <name>Authserver login</name>
-    <description>Lets users log in with their Authserver credentials</description>
+<info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <id>user_authserver</id>
+    <name>Authserver user and group backend</name>
+    <summary>Authenticate users against Authserver</summary>
+    <description>Authenticate users against Authserver</description>
     <licence>MIT</licence>
     <author>Lars Vierbergen</author>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <namespace>AuthserverLogin</namespace>
-    <category>other</category>
+    <category>security</category>
+    <bugs>https://github.com/vierbergenlars/nextcloud-app-authserver/issues</bugs>
+    <website>https://github.com/vierbergenlars/nextcloud-app-authserver</website>
     <types>
         <authentication/>
-        <prelogin/>
+        <prelogin />
     </types>
     <dependencies>
         <nextcloud min-version="12.0" />

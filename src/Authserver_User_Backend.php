@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-namespace Studentenraad\Owncloud\AuthserverLogin;
+namespace OCA\AuthserverLogin;
 
 use OCA\user_external\Base;
 use OCP\IUserBackend;
@@ -50,7 +50,7 @@ class Authserver_User_Backend extends Base implements IUserBackend
         }
         list ($protocol, $path) = $arr;
         $url = $protocol . '://' . urlencode($uid) . ':' . urlencode($password) . '@' . $path;
-        $data = file_get_contents($url);
+        $data = @file_get_contents($url);
         if ($data === false) {
             \OCP\Util::writeLog('OC_USER_Authserver', 'Not possible to connect to Authserver Url: "' . $protocol . '://' . $path . '" ', 3);
             return false;
